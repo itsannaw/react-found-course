@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Counter from "./components/Counter";
 import ClassCounter from "./components/ClassCounter";
 import './styles/App.css';
@@ -10,32 +10,35 @@ import PostForm from "./components/PostForm";
 import MySelect from "./components/ui/select/MySelect";
 import PostFilter from "./components/PostFilter";
 import MyModal from "./components/ui/MyModal/MyModal";
+import { usePosts } from "./hooks/usePosts";
+import axios, { Axios } from "axios";
+import PostService from "./API/PostService";
+import Loader from "./components/ui/loader/Loader";
 
 
 function App() {
-  const [posts, setPosts] = useState([
-        {id: 1, title: 'bbb', body: 'Description'},
-        {id: 2, title: 'aaa', body: 'Description'},
-        {id: 3, title: 'jjjj', body: 'Description'}
-      ])
+  const [posts, setPosts] = useState([])
+  const [filter, setFilter] = useState({sort: '', query: ''});
+  const [modal, setModal] = useState(false);
+  const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
+  const [isPostsLoading, setIsPostLoading] = useState(false);
 
-  const [filter, setFilter] = useState({sort: '', query: ''})
-  const [modal, setModal] = useState(false)
+  useEffect(() => {
+      fetchPosts()
+  }, [])
 
-  const sortedPosts = useMemo(() => {
-    if(filter.sort) {
-      return [...posts].sort((a,b) => a[filter.sort].localeCompare(b[filter.sort]))
-    }
-    return posts;
-  }, [filter.sort, posts])
-
-  const sortedAndSearchedPosts = useMemo(() => {
-    return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query.toLowerCase()))
-  }, [filter.query, sortedPosts])
-  
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
     setModal(false)
+  }
+
+  async function fetchPosts() { 
+    setIsPostLoading(true);
+    setTimeout(async () => {
+      const posts = await PostService.getAll();
+      setPosts(posts);
+      setIsPostLoading(false);
+    }, 1000)
   }
 
   //получаем пост из дочернего компонента
@@ -46,6 +49,7 @@ function App() {
 
       return (
         <div className="App">
+          <button onClick={fetchPosts}>GET POSTS</button>
           <MyButton style={{marginTop: 30}} onClick={() => setModal(true)}>
               Создать пользователя
           </MyButton>
@@ -59,7 +63,10 @@ function App() {
               filter={filter}
               setFilter={setFilter}
           />
-            <PostList remove={removePost} posts={sortedAndSearchedPosts} title='Посты про JS'/>
+          {isPostsLoading
+              ? <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}><Loader/></div>
+              : <PostList remove={removePost} posts={sortedAndSearchedPosts} title='Посты про JS'/>
+          }
         </div>
       );
     }
