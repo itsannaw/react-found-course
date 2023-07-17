@@ -1,8 +1,39 @@
 .myBtn {
-    padding: 5px 15px;
-    color: teal;
-    font-size: 14px;
-    background: transparent;
-    border: 1px solid teal;
-    cursor: pointer;
+  z-index: 1;
+  position: relative;
+  font-size: inherit;
+  font-family: inherit;
+  color: white;
+  padding: 0.5em 1em;
+  outline: none;
+  border: none;
+  background-color: #BC8F8F;
+  overflow: hidden;
+  transition: color 0.4s ease-in-out;
+  border-radius: 10px;
+
+}
+
+.myBtn::before {
+  content: '';
+  z-index: -1;
+  position: absolute;
+  top: 100%;
+  right: 100%;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background-color: #FFE4C4;
+  transform-origin: center;
+  transform: translate3d(50%, -50%, 0) scale3d(0, 0, 0);
+  transition: transform 0.45s ease-in-out;
+}
+
+.myBtn:hover {
+  cursor: pointer;
+  color: #000000;
+}
+
+.myBtn:hover::before {
+  transform: translate3d(50%, -50%, 0) scale3d(20, 15, 15);
 }

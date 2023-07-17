@@ -3,7 +3,7 @@ import React from 'react';
 const About = () => {
     return (
         <h1>
-            Это приложение создано в качестве обучения React
+            This app is created as a React training :)
         </h1>
     );
 };
