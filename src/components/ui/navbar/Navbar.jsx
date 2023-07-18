@@ -10,7 +10,7 @@ import {
 import classes from "./Navbar.module.css";
 
 const Navbar = () => {
-  const { isAuth, setIsAuth } = useContext(AuthContext);
+  const { setIsAuth } = useContext(AuthContext);
 
   const logout = () => {
     setIsAuth(false);
@@ -18,13 +18,7 @@ const Navbar = () => {
   };
   return (
     <div className={classes.navbar}>
-      <Link onClick={logout}>
-        <FontAwesomeIcon
-          icon={faDoorClosed}
-          size="xl"
-          style={{ color: "#000000" }}
-        />
-      </Link>
+      <div className={classes.navbar__left}>
       <Link to="/about">
         <FontAwesomeIcon
           icon={faCircleInfo}
@@ -39,6 +33,16 @@ const Navbar = () => {
           style={{ color: "#000000" }}
         />
       </Link>
+      </div>
+      <div>
+        <Link onClick={logout}>
+          <FontAwesomeIcon
+            icon={faDoorClosed}
+            size="xl"
+            style={{ color: "#000000" }}
+          />
+        </Link>
+      </div>
     </div>
   );
 };
